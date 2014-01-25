@@ -1,7 +1,7 @@
 /*
 HMC5883L.cpp - Class file for the HMC5883L Triple Axis Digital Compass Arduino Library.
 
-Version: 1.0.0
+Version: 1.0.1
 (c) 2014 Korneliusz Jarzebski
 www.jarzebski.pl
 
@@ -67,7 +67,7 @@ Vector HMC5883L::readNormalize(void)
     return v;
 }
 
-void HMC5883L::setRange(range_t range)
+void HMC5883L::setRange(hmc5883l_range_t range)
 {
     switch(range)
     {
@@ -110,12 +110,12 @@ void HMC5883L::setRange(range_t range)
     writeRegister8(HMC5883L_REG_CONFIG_B, range << 5);
 }
 
-range_t HMC5883L::getRange(void)
+hmc5883l_range_t HMC5883L::getRange(void)
 {
-    return (range_t)((readRegister8(HMC5883L_REG_CONFIG_B) >> 5));
+    return (hmc5883l_range_t)((readRegister8(HMC5883L_REG_CONFIG_B) >> 5));
 }
 
-void HMC5883L::setMeasurementMode(mode_t mode)
+void HMC5883L::setMeasurementMode(hmc5883l_mode_t mode)
 {
     uint8_t value;
 
@@ -126,17 +126,17 @@ void HMC5883L::setMeasurementMode(mode_t mode)
     writeRegister8(HMC5883L_REG_MODE, value);
 }
 
-mode_t HMC5883L::getMeasurementMode(void)
+hmc5883l_mode_t HMC5883L::getMeasurementMode(void)
 {
     uint8_t value;
 
     value = readRegister8(HMC5883L_REG_MODE);
     value &= 0b00000011;
 
-    return (mode_t)value;
+    return (hmc5883l_mode_t)value;
 }
 
-void HMC5883L::setDataRate(dataRate_t dataRate)
+void HMC5883L::setDataRate(hmc5883l_dataRate_t dataRate)
 {
     uint8_t value;
 
@@ -147,7 +147,7 @@ void HMC5883L::setDataRate(dataRate_t dataRate)
     writeRegister8(HMC5883L_REG_CONFIG_A, value);
 }
 
-dataRate_t HMC5883L::getDataRate(void)
+hmc5883l_dataRate_t HMC5883L::getDataRate(void)
 {
     uint8_t value;
 
@@ -155,10 +155,10 @@ dataRate_t HMC5883L::getDataRate(void)
     value &= 0b00011100;
     value >>= 2;
 
-    return (dataRate_t)value;
+    return (hmc5883l_dataRate_t)value;
 }
 
-void HMC5883L::setSamples(samples_t samples)
+void HMC5883L::setSamples(hmc5883l_samples_t samples)
 {
     uint8_t value;
 
@@ -169,7 +169,7 @@ void HMC5883L::setSamples(samples_t samples)
     writeRegister8(HMC5883L_REG_CONFIG_A, value);
 }
 
-samples_t HMC5883L::getSamples(void)
+hmc5883l_samples_t HMC5883L::getSamples(void)
 {
     uint8_t value;
 
@@ -177,7 +177,7 @@ samples_t HMC5883L::getSamples(void)
     value &= 0b01100000;
     value >>= 5;
 
-    return (samples_t)value;
+    return (hmc5883l_samples_t)value;
 }
 
 // Write byte to register

@@ -1,7 +1,7 @@
 /*
 HMC5883L.h - Header file for the HMC5883L Triple Axis Digital Compass Arduino Library.
 
-Version: 1.0.0
+Version: 1.0.1
 (c) 2014 Korneliusz Jarzebski
 www.jarzebski.pl
 
@@ -44,18 +44,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 typedef enum
 {
-    HMC5883L_IDLE          = 0b10,
-    HMC5883L_SINGLE        = 0b01,
-    HMC5883L_CONTINOUS     = 0b00
-} mode_t;
-
-typedef enum
-{
     HMC5883L_SAMPLES_8     = 0b11,
     HMC5883L_SAMPLES_4     = 0b10,
     HMC5883L_SAMPLES_2     = 0b01,
     HMC5883L_SAMPLES_1     = 0b00
-} samples_t;
+} hmc5883l_samples_t;
 
 typedef enum
 {
@@ -66,7 +59,7 @@ typedef enum
     HMC5883L_DATARATE_3HZ        = 0b010,
     HMC5883L_DATARATE_1_5HZ      = 0b001,
     HMC5883L_DATARATE_0_75_HZ    = 0b000
-} dataRate_t;
+} hmc5883l_dataRate_t;
 
 typedef enum
 {
@@ -78,14 +71,24 @@ typedef enum
     HMC5883L_RANGE_1_9GA     = 0b010,
     HMC5883L_RANGE_1_3GA     = 0b001,
     HMC5883L_RANGE_0_88GA    = 0b000
-} range_t;
+} hmc5883l_range_t;
 
+typedef enum
+{
+    HMC5883L_IDLE          = 0b10,
+    HMC5883L_SINGLE        = 0b01,
+    HMC5883L_CONTINOUS     = 0b00
+} hmc5883l_mode_t;
+
+#ifndef VECTOR_STRUCT_H
+#define VECTOR_STRUCT_H
 struct Vector
 {
     float XAxis;
     float YAxis;
     float ZAxis;
 };
+#endif
 
 class HMC5883L
 {
@@ -96,17 +99,17 @@ class HMC5883L
 	Vector readRaw(void);
 	Vector readNormalize(void);
 
-	void  setRange(range_t range);
-	range_t getRange(void);
+	void  setRange(hmc5883l_range_t range);
+	hmc5883l_range_t getRange(void);
 
-	void  setMeasurementMode(mode_t mode);
-	mode_t getMeasurementMode(void);
+	void  setMeasurementMode(hmc5883l_mode_t mode);
+	hmc5883l_mode_t getMeasurementMode(void);
 
-	void  setDataRate(dataRate_t dataRate);
-	dataRate_t getDataRate(void);
+	void  setDataRate(hmc5883l_dataRate_t dataRate);
+	hmc5883l_dataRate_t getDataRate(void);
 
-	void  setSamples(samples_t samples);
-	samples_t getSamples(void);
+	void  setSamples(hmc5883l_samples_t samples);
+	hmc5883l_samples_t getSamples(void);
 
     private:
 
