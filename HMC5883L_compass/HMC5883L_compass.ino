@@ -58,7 +58,7 @@ void loop()
   {
     heading += 2 * PI;
   }
- 
+
   if (heading > 2 * PI)
   {
     heading -= 2 * PI;
@@ -69,7 +69,7 @@ void loop()
 
   // Fix HMC5883L issue with angles
   float fixedHeadingDegrees;
- 
+
   if (headingDegrees >= 1 && headingDegrees < 240)
   {
     fixedHeadingDegrees = map(headingDegrees, 0, 239, 0, 179);
