@@ -1,7 +1,7 @@
 /*
 HMC5883L.h - Header file for the HMC5883L Triple Axis Digital Compass Arduino Library.
 
-Version: 1.0.1
+Version: 1.1.0
 (c) 2014 Korneliusz Jarzebski
 www.jarzebski.pl
 
@@ -99,6 +99,8 @@ class HMC5883L
 	Vector readRaw(void);
 	Vector readNormalize(void);
 
+	void  setOffset(int xo, int yo);
+
 	void  setRange(hmc5883l_range_t range);
 	hmc5883l_range_t getRange(void);
 
@@ -115,6 +117,7 @@ class HMC5883L
 
 	float mgPerDigit;
 	Vector v;
+	int xOffset, yOffset;
 
 	void writeRegister8(uint8_t reg, uint8_t value);
 	uint8_t readRegister8(uint8_t reg);

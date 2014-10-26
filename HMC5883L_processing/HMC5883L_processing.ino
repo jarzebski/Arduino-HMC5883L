@@ -15,9 +15,9 @@ int previousDegree;
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
-  // Initialize ADXL345
+  // Initialize HMC5883L
   while (!compass.begin())
   {
     delay(500);
@@ -33,7 +33,10 @@ void setup()
   compass.setDataRate(HMC5883L_DATARATE_30HZ);
 
   // Set number of samples averaged
-  compass.setSamples(HMC5883L_SAMPLES_4);
+  compass.setSamples(HMC5883L_SAMPLES_8);
+
+  // Set calibration offset. See HMC5883L_calibration.ino
+  compass.setOffset(0, 0); 
 }
 
 void loop()

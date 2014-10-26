@@ -1,7 +1,7 @@
 /*
-    HMC5883L Triple Axis Digital Compass.
-    Processing for HMC5883L_processing.ino
-    Processing for HMC5883L_processing_MPU6050.ino
+    HMC5883L Triple Axis Digital Compass. 
+    Processing for HMC5883L_compensation_MPU6050.ino
+    Processing for HMC5883L_compensation_ADXL345.ino
     Read more: http://www.jarzebski.pl/arduino/czujniki-i-sensory/3-osiowy-magnetometr-hmc5883l.html
     GIT: https://github.com/jarzebski/Arduino-HMC5883L
     Web: http://www.jarzebski.pl
@@ -14,19 +14,17 @@ Serial myPort;
 
 // Data samples
 int actualSample = 0;
-int maxSamples = 400;
+int maxSamples = 500;
 int sampleStep = 1;
 boolean hasData = false;
 
 // Charts
 PGraphics pgChart;
-int[] colors = { #ff4444, #33ff99, #5588ff };
-String[] magneticSeries = { "XAxis", "YAxis", "ZAxis" };
-String[] headingSeries = { "Normal", "Fixed", "Smooth" };
+int[] colors = { #ff4444, #33ff99 };
+String[] headingSeries = { "Normal", "Compensated"};
 
 // Data for compare
-float[][] magneticValues = new float[3][maxSamples];
-float[][] headingValues = new float[3][maxSamples];
+float[][] headingValues = new float[2][maxSamples];
 
 // Artificial Horizon
 PGraphics pgCompassPlate;
@@ -39,7 +37,7 @@ int compassHeight;
 
 void setup ()
 {
-  size(755, 550, P2D);
+  size(570, 550, P2D);
   background(0);
 
   // Init
@@ -197,11 +195,11 @@ void initCompass()
   compassHeight = imgCompass.height;
 }
 
-void drawCompass(int x, int y, float[][] head, PImage plate)
-{
+void drawCompass(int x, int y, float[] head, PImage plate)
+{ 
   pgCompassPlate = createGraphics(compassWidth, compassWidth); 
 
-  float heading = head[2][actualSample-1];
+  float heading = head[actualSample-1];
   float north = 180 + heading;
   
   pgCompassPlate.beginDraw();
@@ -226,11 +224,9 @@ void draw()
 
   background(0);
 
-  drawChart("Magnetic field [mG]", magneticSeries, magneticValues, 10, 10, 200, false, false, 0, 0, 10);
   drawChart("Heading [deg]", headingSeries, headingValues, 10, 280, 200, true, true, 0, 360, 30);
-  drawCompass(480, 5, headingValues, imgCompassPlateWhite);
-  drawCompass(480, 275, headingValues, imgCompassPlateBlack);
-
+  drawCompass(10, 5, headingValues[0], imgCompassPlateWhite);
+  drawCompass(295, 5, headingValues[1], imgCompassPlateWhite);
 }
 
 float getMin(float[][] chart)
@@ -312,17 +308,11 @@ void serialEvent (Serial myPort)
     String[] list = split(inString, ':');
     String testString = trim(list[0]);
 
-    if (list.length != 6) return;
-
-    // Magnetic field
-    magneticValues[0][actualSample] = (float(list[0]));
-    magneticValues[1][actualSample] = (float(list[1]));
-    magneticValues[2][actualSample] = (float(list[2]));
+    if (list.length != 2) return;
 
     // Headings
-    headingValues[0][actualSample] = (float(list[3]));
-    headingValues[1][actualSample] = (float(list[4]));
-    headingValues[2][actualSample] = (float(list[5]));
+    headingValues[0][actualSample] = (float(list[0]));
+    headingValues[1][actualSample] = (float(list[1]));
 
     if (actualSample > 1)
     {
@@ -331,7 +321,6 @@ void serialEvent (Serial myPort)
 
     if (actualSample == (maxSamples-1))
     {
-      nextSample(magneticValues);
       nextSample(headingValues);
    } else
     {

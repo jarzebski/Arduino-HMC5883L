@@ -1,5 +1,5 @@
 /*
-  HMC5883L Triple Axis Digital Compass. Compass Example.
+  HMC5883L Triple Axis Digital Compass + MPU6050 (GY-86 / GY-87). Output for HMC5883L_processing.pde
   Read more: http://www.jarzebski.pl/arduino/czujniki-i-sensory/3-osiowy-magnetometr-hmc5883l.html
   GIT: https://github.com/jarzebski/Arduino-HMC5883L
   Web: http://www.jarzebski.pl
@@ -8,18 +8,31 @@
 
 #include <Wire.h>
 #include <HMC5883L.h>
+#include <MPU6050.h>
 
 HMC5883L compass;
+MPU6050 mpu;
+
+int previousDegree;
 
 void setup()
 {
   Serial.begin(9600);
 
-  // Initialize Initialize HMC5883L
-  Serial.println("Initialize HMC5883L");
+  // Initialize MPU6050
+  while(!mpu.begin(MPU6050_SCALE_2000DPS, MPU6050_RANGE_2G))
+  {
+    delay(500);
+  }
+
+  // Enable bypass mode
+  mpu.setI2CMasterModeEnabled(false);
+  mpu.setI2CBypassEnabled(true);
+  mpu.setSleepEnabled(false);
+
+  // Initialize HMC5883L
   while (!compass.begin())
   {
-    Serial.println("Could not find a valid HMC5883L sensor, check wiring!");
     delay(500);
   }
 
@@ -36,11 +49,12 @@ void setup()
   compass.setSamples(HMC5883L_SAMPLES_8);
 
   // Set calibration offset. See HMC5883L_calibration.ino
-  compass.setOffset(0, 0);
+  compass.setOffset(0, 0); 
 }
 
 void loop()
 {
+  long x = micros();
   Vector norm = compass.readNormalize();
 
   // Calculate heading
@@ -59,7 +73,7 @@ void loop()
   {
     heading += 2 * PI;
   }
-
+ 
   if (heading > 2 * PI)
   {
     heading -= 2 * PI;
@@ -68,13 +82,44 @@ void loop()
   // Convert to degrees
   float headingDegrees = heading * 180/M_PI; 
 
+  // Fix HMC5883L issue with angles
+  float fixedHeadingDegrees;
+ 
+  if (headingDegrees >= 1 && headingDegrees < 240)
+  {
+    fixedHeadingDegrees = map(headingDegrees, 0, 239, 0, 179);
+  } else
+  if (headingDegrees >= 240)
+  {
+    fixedHeadingDegrees = map(headingDegrees, 240, 360, 180, 360);
+  }
+
+  // Smooth angles rotation for +/- 3deg
+  int smoothHeadingDegrees = round(fixedHeadingDegrees);
+
+  if (smoothHeadingDegrees < (previousDegree + 3) && smoothHeadingDegrees > (previousDegree - 3))
+  {
+    smoothHeadingDegrees = previousDegree;
+  }
+  
+  previousDegree = smoothHeadingDegrees;
+
   // Output
-  Serial.print(" Heading = ");
-  Serial.print(heading);
-  Serial.print(" Degress = ");
+  Serial.print(norm.XAxis);
+  Serial.print(":");
+  Serial.print(norm.YAxis);
+  Serial.print(":");
+  Serial.print(norm.ZAxis);
+  Serial.print(":");
   Serial.print(headingDegrees);
+  Serial.print(":");
+  Serial.print(fixedHeadingDegrees);
+  Serial.print(":");
+  Serial.print(smoothHeadingDegrees);  
   Serial.println();
 
-  delay(100);
+  // One loop: ~5ms @ 115200 serial.
+  // We need delay ~28ms for allow data rate 30Hz (~33ms)
+  delay(30);
 }
 

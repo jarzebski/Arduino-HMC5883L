@@ -1,5 +1,5 @@
 /*
-  HMC5883L Triple Axis Digital Compass. Compass Example.
+  HMC5883L Triple Axis Digital Compass + MPU6050 (GY-86 / GY-87). Compass Example.
   Read more: http://www.jarzebski.pl/arduino/czujniki-i-sensory/3-osiowy-magnetometr-hmc5883l.html
   GIT: https://github.com/jarzebski/Arduino-HMC5883L
   Web: http://www.jarzebski.pl
@@ -8,12 +8,27 @@
 
 #include <Wire.h>
 #include <HMC5883L.h>
+#include <MPU6050.h>
 
 HMC5883L compass;
+MPU6050 mpu;
 
 void setup()
 {
   Serial.begin(9600);
+
+  // If you have GY-86 or GY-87 module.
+  // To access HMC5883L you need to disable the I2C Master Mode and Sleep Mode, and enable I2C Bypass Mode
+
+  while(!mpu.begin(MPU6050_SCALE_2000DPS, MPU6050_RANGE_2G))
+  {
+    Serial.println("Could not find a valid MPU6050 sensor, check wiring!");
+    delay(500);
+  }
+
+  mpu.setI2CMasterModeEnabled(false);
+  mpu.setI2CBypassEnabled(true) ;
+  mpu.setSleepEnabled(false);
 
   // Initialize Initialize HMC5883L
   Serial.println("Initialize HMC5883L");
@@ -36,7 +51,7 @@ void setup()
   compass.setSamples(HMC5883L_SAMPLES_8);
 
   // Set calibration offset. See HMC5883L_calibration.ino
-  compass.setOffset(0, 0);
+  compass.setOffset(0, 0); 
 }
 
 void loop()
@@ -59,7 +74,7 @@ void loop()
   {
     heading += 2 * PI;
   }
-
+ 
   if (heading > 2 * PI)
   {
     heading -= 2 * PI;
@@ -77,4 +92,3 @@ void loop()
 
   delay(100);
 }
-
