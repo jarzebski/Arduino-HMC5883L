@@ -186,6 +186,19 @@ hmc5883l_samples_t HMC5883L::getSamples(void)
     return (hmc5883l_samples_t)value;
 }
 
+Vector HMC5883L::selfTest()
+{
+	Vector value;
+	
+	setMeasurementMode(HMC5883L_SINGLE);
+	writeRegister8(HMC5883L_REG_CONFIG_A, 0x00);
+	writeRegister8(HMC5883L_REG_CONFIG_A, 0x01);
+	Value = readRaw();
+	writeRegister8(HMC5883L_REG_CONFIG_A, 0x00);
+	
+	return Value;
+}
+
 // Write byte to register
 void HMC5883L::writeRegister8(uint8_t reg, uint8_t value)
 {
