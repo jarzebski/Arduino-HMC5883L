@@ -193,10 +193,10 @@ Vector HMC5883L::selfTest()
 	setMeasurementMode(HMC5883L_SINGLE);
 	writeRegister8(HMC5883L_REG_CONFIG_A, 0x00);
 	writeRegister8(HMC5883L_REG_CONFIG_A, 0x01);
-	Value = readRaw();
+	value = readRaw();
 	writeRegister8(HMC5883L_REG_CONFIG_A, 0x00);
 	
-	return Value;
+	return value;
 }
 
 // Write byte to register
