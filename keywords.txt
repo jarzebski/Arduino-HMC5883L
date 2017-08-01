@@ -1,0 +1,29 @@
+###########################################
+# Syntax Coloring Map For HMC5883L
+###########################################
+
+###########################################
+# Datatypes (KEYWORD1)
+###########################################
+
+HMC5883L		KEYWORD1
+Vector			KEYWORD1
+
+###########################################
+# Methods and Functions (KEYWORD2)
+###########################################
+begin			KEYWORD2
+readRaw			KEYWORD2
+readNormalize		KEYWORD2
+setRange		KEYWORD2
+getRange		KEYWORD2
+setMeasurementMode	KEYWORD2
+getMeasurementMode	KEYWORD2
+setDataRate		KEYWORD2
+getDataRate		KEYWORD2
+setSamples		KEYWORD2
+getSamples		KEYWORD2
+selfTest		KEYWORD2
+###########################################
+# Constants (LITERAL1)
+###########################################
