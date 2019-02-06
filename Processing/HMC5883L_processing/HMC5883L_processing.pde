@@ -45,8 +45,11 @@ void setup ()
   // Init
   initCompass();
 
+  // List all the available serial ports:
+  printArray(args);
+  printArray(Serial.list());
   // Serial
-  myPort = new Serial(this, Serial.list()[0], 9600);
+  myPort = new Serial(this, Serial.list()[4], 9600);
   myPort.bufferUntil(10);
 }
 
