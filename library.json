@@ -1,0 +1,16 @@
+{
+  "name": "Arduino-HMC5883L",
+  "keywords": "HMC5883L, sensor, magnetometer, i2c, wire",
+  "description": "Arduino library for HMC5883L magnetometer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jarzebski/Arduino-HMC5883L"
+  },
+  "authors": {
+    "name": "Korneliusz Jarzębski",
+    "url": "http://www.jarzebski.pl/"
+  },
+  "version": "1.1.0",
+  "frameworks": "arduino",
+  "platforms": "*"
+}
