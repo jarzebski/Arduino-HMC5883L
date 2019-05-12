@@ -17,8 +17,11 @@ int minX = 0;
 int maxX = 0;
 int minY = 0;
 int maxY = 0;
+int minZ = 0;
+int maxZ = 0;
 int offX = 0;
 int offY = 0;
+int offZ = 0;
 
 void setup()
 {
@@ -63,10 +66,13 @@ void loop()
   if (mag.XAxis > maxX) maxX = mag.XAxis;
   if (mag.YAxis < minY) minY = mag.YAxis;
   if (mag.YAxis > maxY) maxY = mag.YAxis;
+  if (mag.ZAxis < minZ) minZ = mag.ZAxis;
+  if (mag.ZAxis > maxZ) maxZ = mag.ZAxis;
 
   // Calculate offsets
   offX = (maxX + minX)/2;
   offY = (maxY + minY)/2;
+  offZ = (maxZ + minZ)/2;
 
   Serial.print(mag.XAxis);
   Serial.print(":");
@@ -80,8 +86,14 @@ void loop()
   Serial.print(":");
   Serial.print(maxY);
   Serial.print(":");
+  Serial.print(minZ);
+  Serial.print(":");
+  Serial.print(maxZ);
+  Serial.print(":");
   Serial.print(offX);
   Serial.print(":");
   Serial.print(offY);
+  Serial.print(":");
+  Serial.print(offZ);
   Serial.print("\n");
 }

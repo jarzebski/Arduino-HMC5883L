@@ -53,7 +53,7 @@ Vector HMC5883L::readRaw(void)
 {
     v.XAxis = readRegister16(HMC5883L_REG_OUT_X_M) - xOffset;
     v.YAxis = readRegister16(HMC5883L_REG_OUT_Y_M) - yOffset;
-    v.ZAxis = readRegister16(HMC5883L_REG_OUT_Z_M);
+    v.ZAxis = readRegister16(HMC5883L_REG_OUT_Z_M) - zOffset;
 
     return v;
 }
@@ -62,15 +62,16 @@ Vector HMC5883L::readNormalize(void)
 {
     v.XAxis = ((float)readRegister16(HMC5883L_REG_OUT_X_M) - xOffset) * mgPerDigit;
     v.YAxis = ((float)readRegister16(HMC5883L_REG_OUT_Y_M) - yOffset) * mgPerDigit;
-    v.ZAxis = (float)readRegister16(HMC5883L_REG_OUT_Z_M) * mgPerDigit;
+    v.ZAxis = ((float)readRegister16(HMC5883L_REG_OUT_Z_M) - zOffset) * mgPerDigit;
 
     return v;
 }
 
-void HMC5883L::setOffset(int xo, int yo)
+void HMC5883L::setOffset(int xo, int yo, int zo)
 {
     xOffset = xo;
     yOffset = yo;
+    zOffset = zo;
 }
 
 void HMC5883L::setRange(hmc5883l_range_t range)
