@@ -79,7 +79,7 @@ void HMC5883L::setRange(hmc5883l_range_t range)
     switch(range)
     {
 	case HMC5883L_RANGE_0_88GA:
-	    mgPerDigit = 0.073f;
+	    mgPerDigit = 0.73f;
 	    break;
 
 	case HMC5883L_RANGE_1_3GA:
@@ -289,4 +289,46 @@ int16_t HMC5883L::readRegister16(uint8_t reg)
     value = vha << 8 | vla;
 
     return value;
+}
+
+void HMC5883L::setDeclination( int declination_degs , int declination_mins, char declination_dir )
+{    
+  // Convert declination to decimal degrees
+  switch(declination_dir)
+  {
+    // North and East are positive   
+    case 'E': 
+      declination_offset_radians = ( declination_degs + (1/60 * declination_mins)) * (M_PI / 180);
+      break;
+      
+    // South and West are negative    
+    case 'W':
+      declination_offset_radians =  0 - (( declination_degs + (1/60 * declination_mins) ) * (M_PI / 180));
+      break;
+  } 
+}
+
+float HMC5883L::getAzimuth(){
+	// calculate heading from the north and west magnetic axes
+    Vector norm = readNormalize();
+    float heading = atan2(norm.YAxis, norm.XAxis);
+
+	if (compassFlip){
+        heading = atan2(-norm.YAxis, norm.XAxis);
+	}
+	// Adjust the heading by the declination
+	heading += declination_offset_radians;
+	
+	// Correct for when signs are reversed.
+	if(heading < 0)
+		heading += 2*M_PI;
+		
+	// Check for wrap due to addition of declination.
+	if(heading > 2*M_PI)
+		heading -= 2*M_PI;
+	
+	// Convert radians to degrees for readability.
+	heading = heading * 180/M_PI; 
+	heading = heading - offsetDegrees;
+  	return heading < 0 ? 360 + heading : heading;
 }
