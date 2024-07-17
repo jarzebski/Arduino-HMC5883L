@@ -115,6 +115,12 @@ class HMC5883L
 	
 	Vector selfTest();
 
+    void setDeclination( int declination_degs , int declination_mins, char declination_dir );
+    float getAzimuth(void);
+    float declination_offset_radians =  0.0;
+    bool compassFlip = false;
+    int offsetDegrees = 0;
+
     private:
 
 	float mgPerDigit;

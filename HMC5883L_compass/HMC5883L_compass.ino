@@ -37,6 +37,17 @@ void setup()
 
   // Set calibration offset. See HMC5883L_calibration.ino
   compass.setOffset(0, 0, 0);
+
+  // Set declination angle on your location and fix heading
+  // You can find your declination on: http://magnetic-declination.com/
+  // For Bytom / Poland declination angle is 4'26E (positive)
+  compass.setDeclination(4,26,'E');
+
+  // Set if compass is flipped upside down. This is normally true for drone GPS/Magnetometers
+  compass.compassFlip = false;
+
+  // Set the compass offset rotation in degrees. This is normally 90 degrees for drone GPS/Magnetometers
+  compass.offsetDegrees = 0;
 }
 
 void loop()
@@ -44,35 +55,11 @@ void loop()
   Vector norm = compass.readNormalize();
 
   // Calculate heading
-  float heading = atan2(norm.YAxis, norm.XAxis);
-
-  // Set declination angle on your location and fix heading
-  // You can find your declination on: http://magnetic-declination.com/
-  // (+) Positive or (-) for negative
-  // For Bytom / Poland declination angle is 4'26E (positive)
-  // Formula: (deg + (min / 60.0)) / (180 / M_PI);
-  float declinationAngle = (4.0 + (26.0 / 60.0)) / (180 / M_PI);
-  heading += declinationAngle;
-
-  // Correct for heading < 0deg and heading > 360deg
-  if (heading < 0)
-  {
-    heading += 2 * PI;
-  }
-
-  if (heading > 2 * PI)
-  {
-    heading -= 2 * PI;
-  }
-
-  // Convert to degrees
-  float headingDegrees = heading * 180/M_PI; 
+  float heading = compass.getAzimuth();
 
   // Output
   Serial.print(" Heading = ");
   Serial.print(heading);
-  Serial.print(" Degress = ");
-  Serial.print(headingDegrees);
   Serial.println();
 
   delay(100);
