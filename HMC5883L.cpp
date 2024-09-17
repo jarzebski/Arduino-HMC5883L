@@ -79,7 +79,7 @@ void HMC5883L::setRange(hmc5883l_range_t range)
     switch(range)
     {
 	case HMC5883L_RANGE_0_88GA:
-	    mgPerDigit = 0.073f;
+	    mgPerDigit = 0.73f;
 	    break;
 
 	case HMC5883L_RANGE_1_3GA:
